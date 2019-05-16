@@ -7,6 +7,7 @@ metadata:
     tier: backend
     role: master
 spec:
+  type: NodePort 
   ports:
   - port: 6379
     targetPort: 6379
@@ -52,6 +53,7 @@ metadata:
     tier: backend
     role: slave
 spec:
+  type: NodePort 
   ports:
   - port: 6379
   selector:
