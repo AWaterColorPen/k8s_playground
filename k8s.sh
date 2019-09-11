@@ -37,8 +37,9 @@ kubectl get secret $(kubectl get serviceaccount kubeapps-operator -o jsonpath='{
 ## kubernetes-dashboard
 # https://github.com/helm/charts/tree/master/stable/kubernetes-dashboard
 helm install stable/kubernetes-dashboard \
+    --set enableSkipLogin=true \
     --set ingress.enabled=true \
     --set ingress.hosts[0]=kubernetes-dashboard.local \
     --set ingress.annotations=kubernetes.io/ingress.class: nginx, kubernetes.io/tls-acme: 'true', nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  \
-    --set ingress.tls[0]=secretName: kubernetes-dashboard-tls, hosts: [kubernetes-dashboard.local]\
+    --set ingress.tls[0]=secretName: kubernetes-dashboard-tls, hosts: [kubernetes-dashboard.local] \
     --set rbac.clusterAdminRole=true
