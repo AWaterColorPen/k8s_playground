@@ -40,6 +40,9 @@ helm install stable/kubernetes-dashboard \
     --set enableSkipLogin=true \
     --set ingress.enabled=true \
     --set ingress.hosts[0]=kubernetes-dashboard.local \
-    --set ingress.annotations=kubernetes.io/ingress.class: nginx, kubernetes.io/tls-acme: 'true', nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  \
-    --set ingress.tls[0]=secretName: kubernetes-dashboard-tls, hosts: [kubernetes-dashboard.local] \
+    --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
+    --set ingress.annotations."kubernetes\.io/tls-acme"='true' \
+    --set ingress.annotations."nginx\.ingress\.kubernetes\.io/backend-protocol"="HTTPS" \
+    --set ingress.tls[0].secretName=kubernetes-dashboard-tls \
+    --set ingress.tls[0].hosts[0]=kubernetes-dashboard.local \
     --set rbac.clusterAdminRole=true
