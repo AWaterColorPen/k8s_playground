@@ -41,8 +41,34 @@ helm install stable/kubernetes-dashboard \
     --set ingress.enabled=true \
     --set ingress.hosts[0]=kubernetes-dashboard.local \
     --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
-    --set ingress.annotations."kubernetes\.io/tls-acme"='true' \
+    --set ingress.annotations."kubernetes\.io/tls-acme"="true" \
     --set ingress.annotations."nginx\.ingress\.kubernetes\.io/backend-protocol"="HTTPS" \
     --set ingress.tls[0].secretName=kubernetes-dashboard-tls \
     --set ingress.tls[0].hosts[0]=kubernetes-dashboard.local \
     --set rbac.clusterAdminRole=true
+
+## prometheus-operator
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/alertmanager.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/podmonitor.crd.yaml
+helm install stable/prometheus-operator \
+    --set alertmanager.ingress.enabled=true \
+    --set alertmanager.ingress.hosts[0]=alertmanager.local \
+    --set alertmanager.ingress.paths[0]=/ \
+    --set alertmanager.ingress.tls[0].secretName=alertmanager-general-tls \
+    --set alertmanager.ingress.tls[0].hosts[0]=alertmanager.local \
+    --set grafana.ingress.enabled=true \
+    --set grafana.ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
+    --set grafana.ingress.annotations."kubernetes\.io/tls-acme"="true" \
+    --set grafana.ingress.hosts[0]=grafana.local \
+    --set grafana.ingress.path=/ \
+    --set grafana.ingress.tls[0].secretName=grafana-general-tls \
+    --set grafana.ingress.tls[0].hosts[0]=grafana.local \
+    --set prometheus.ingress.enabled=true \
+    --set prometheus.ingress.hosts[0]=prometheus.local \
+    --set prometheus.ingress.paths[0]=/ \
+    --set prometheus.ingress.tls[0].secretName=prometheus-general-tls \
+    --set prometheus.ingress.tls[0].hosts[0]=prometheus.local \
