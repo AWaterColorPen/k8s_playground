@@ -71,4 +71,9 @@ helm install stable/prometheus-operator \
     --set prometheus.ingress.hosts[0]=prometheus.local \
     --set prometheus.ingress.paths[0]=/ \
     --set prometheus.ingress.tls[0].secretName=prometheus-general-tls \
-    --set prometheus.ingress.tls[0].hosts[0]=prometheus.local \
+    --set prometheus.ingress.tls[0].hosts[0]=prometheus.local
+
+## consul
+# https://github.com/helm/charts/tree/master/stable/consul
+helm install stable/consul
+    
