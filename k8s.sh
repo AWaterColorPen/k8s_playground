@@ -75,5 +75,11 @@ helm install stable/prometheus-operator \
 
 ## consul
 # https://github.com/helm/charts/tree/master/stable/consul
-helm install stable/consul
-    
+helm install stable/consul \
+    --set uiService.type="ClusterIP" \
+    --set uiIngress.enabled=true \
+    --set uiIngress.annotations."kubernetes\.io/ingress\.class"=nginx \
+    --set uiIngress.annotations."kubernetes\.io/tls-acme"="true" \
+    --set uiIngress.hosts[0]=consul.local \
+    --set uiIngress.tls[0].secretName=consul-tls \
+    --set uiIngress.tls[0].hosts[0]=consul.local 
