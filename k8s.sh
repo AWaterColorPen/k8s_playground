@@ -44,47 +44,42 @@ kubectl get secret $(kubectl get serviceaccount kubeapps-operator -o jsonpath='{
 helm install --generate-name stable/kubernetes-dashboard \
     --set enableSkipLogin=true \
     --set ingress.enabled=true \
-    --set ingress.hosts={"kubernetes-dashboard.local"} \
+    --set ingress.hosts={"kubernetes-dashboard.domain.com"} \
     --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
     --set ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
     --set ingress.annotations."nginx\.ingress\.kubernetes\.io/backend-protocol"=HTTPS \
     --set ingress.tls\[0\].secretName="kubernetes-dashboard-tls" \
-    --set ingress.tls\[0\].hosts={"kubernetes-dashboard.local"} \
+    --set ingress.tls\[0\].hosts={"kubernetes-dashboard.domain.com"} \
     --set rbac.clusterAdminRole=true
 
 ## prometheus-operator
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/alertmanager.crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/podmonitor.crd.yaml
-helm install stable/prometheus-operator \
+helm install --generate-name stable/prometheus-operator \
     --set alertmanager.ingress.enabled=true \
-    --set alertmanager.ingress.hosts[0]=alertmanager.local \
-    --set alertmanager.ingress.paths[0]=/ \
-    --set alertmanager.ingress.tls[0].secretName=alertmanager-general-tls \
-    --set alertmanager.ingress.tls[0].hosts[0]=alertmanager.local \
+    --set alertmanager.ingress.hosts={"alertmanager.domain.com"} \
+    --set alertmanager.ingress.paths={"/"} \
+    --set alertmanager.ingress.tls\[0\].secretName="alertmanager-general-tls" \
+    --set alertmanager.ingress.tls\[0\].hosts={"alertmanager.domain.com"} \
     --set grafana.ingress.enabled=true \
     --set grafana.ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
-    --set grafana.ingress.annotations."kubernetes\.io/tls-acme"="true" \
-    --set grafana.ingress.hosts[0]=grafana.local \
+    --set grafana.ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
+    --set grafana.ingress.hosts={"grafana.domain.com"} \
     --set grafana.ingress.path=/ \
-    --set grafana.ingress.tls[0].secretName=grafana-general-tls \
-    --set grafana.ingress.tls[0].hosts[0]=grafana.local \
+    --set grafana.ingress.tls\[0\].secretName="grafana-general-tls" \
+    --set grafana.ingress.tls\[0\].hosts={"grafana.domain.com"} \
     --set prometheus.ingress.enabled=true \
-    --set prometheus.ingress.hosts[0]=prometheus.local \
-    --set prometheus.ingress.paths[0]=/ \
-    --set prometheus.ingress.tls[0].secretName=prometheus-general-tls \
-    --set prometheus.ingress.tls[0].hosts[0]=prometheus.local
+    --set prometheus.ingress.hosts={"prometheus.domain.com"} \
+    --set prometheus.ingress.paths={"/"} \
+    --set prometheus.ingress.tls\[0\].secretName="prometheus-general-tls" \
+    --set prometheus.ingress.tls\[0\].hosts={"prometheus.domain.com"}
 
 ## consul
 # https://github.com/helm/charts/tree/master/stable/consul
-helm install stable/consul \
+helm install --generate-name stable/consul \
     --set uiService.type="ClusterIP" \
     --set uiIngress.enabled=true \
     --set uiIngress.annotations."kubernetes\.io/ingress\.class"=nginx \
-    --set uiIngress.annotations."kubernetes\.io/tls-acme"="true" \
-    --set uiIngress.hosts[0]=consul.local \
-    --set uiIngress.tls[0].secretName=consul-tls \
-    --set uiIngress.tls[0].hosts[0]=consul.local 
+    --set uiIngress.annotations."kubernetes\.io/tls-acme"=\"true\" \
+    --set uiIngress.hosts={"consul.domain.com"} \
+    --set uiIngress.tls\[0\].secretName="consul-tls" \
+    --set uiIngress.tls\[0\].hosts={"consul.domain.com"}
