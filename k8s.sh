@@ -73,13 +73,20 @@ helm install --generate-name stable/prometheus-operator \
     --set prometheus.ingress.tls\[0\].secretName="prometheus-general-tls" \
     --set prometheus.ingress.tls\[0\].hosts={"prometheus.domain.com"}
 
-## consul
-# https://github.com/helm/charts/tree/master/stable/consul
-helm install --generate-name stable/consul \
-    --set uiService.type="ClusterIP" \
-    --set uiIngress.enabled=true \
-    --set uiIngress.annotations."kubernetes\.io/ingress\.class"=nginx \
-    --set uiIngress.annotations."kubernetes\.io/tls-acme"=\"true\" \
-    --set uiIngress.hosts={"consul.domain.com"} \
-    --set uiIngress.tls\[0\].secretName="consul-tls" \
-    --set uiIngress.tls\[0\].hosts={"consul.domain.com"}
+## druid
+# https://github.com/helm/charts/tree/master/incubator/druid
+helm install --generate-name incubator/druid \
+    --set coordinator.ingress.enabled=true \
+    --set coordinator.ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
+    --set coordinator.ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
+    --set coordinator.ingress.hosts={"druid.coordinator.domain.com"} \
+    --set coordinator.ingress.path=/ \
+    --set coordinator.ingress.tls\[0\].secretName="druid-coordinator-general-tls" \
+    --set coordinator.ingress.tls\[0\].hosts={"druid.coordinator.domain.com"} \
+    --set overlord.ingress.enabled=true \
+    --set overlord.ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
+    --set overlord.ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
+    --set overlord.ingress.hosts={"druid.overlord.domain.com"} \
+    --set overlord.ingress.path=/ \
+    --set overlord.ingress.tls\[0\].secretName="druid-overlord-general-tls" \
+    --set overlord.ingress.tls\[0\].hosts={"druid.overlord.domain.com"} \
