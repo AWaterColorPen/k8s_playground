@@ -71,3 +71,24 @@ helm install --generate-name stable/prometheus-operator \
     --set prometheus.ingress.paths={"/"} \
     --set prometheus.ingress.tls\[0\].secretName="prometheus-general-tls" \
     --set prometheus.ingress.tls\[0\].hosts={"prometheus.domain.com"}
+
+## prometheus
+# https://github.com/helm/charts/tree/master/stable/prometheus
+helm install --generate-name stable/prometheus \
+    --set alertmanager.ingress.enabled=true \
+    --set alertmanager.ingress.hosts={"alertmanager.domain.com"} \
+    --set alertmanager.ingress.paths={"/"} \
+    --set alertmanager.ingress.tls\[0\].secretName="alertmanager-general-tls" \
+    --set alertmanager.ingress.tls\[0\].hosts={"alertmanager.domain.com"} \
+    --set grafana.ingress.enabled=true \
+    --set grafana.ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
+    --set grafana.ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
+    --set grafana.ingress.hosts={"grafana.domain.com"} \
+    --set grafana.ingress.path=/ \
+    --set grafana.ingress.tls\[0\].secretName="grafana-general-tls" \
+    --set grafana.ingress.tls\[0\].hosts={"grafana.domain.com"} \
+    --set prometheus.ingress.enabled=true \
+    --set prometheus.ingress.hosts={"prometheus.domain.com"} \
+    --set prometheus.ingress.paths={"/"} \
+    --set prometheus.ingress.tls\[0\].secretName="prometheus-general-tls" \
+    --set prometheus.ingress.tls\[0\].hosts={"prometheus.domain.com"}
