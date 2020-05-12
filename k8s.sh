@@ -32,7 +32,7 @@ helm repo update
 helm install --generate-name bitnami/kubeapps \
     --set ingress.enabled=true \
     --set ingress.certManager=true \
-    --set useHelm3=true 
+    --set useHelm3=true
 
 kubectl create serviceaccount kubeapps-operator
 kubectl create clusterrolebinding kubeapps-operator --clusterrole=cluster-admin --serviceaccount=default:kubeapps-operator

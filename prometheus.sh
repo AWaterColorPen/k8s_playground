@@ -46,4 +46,16 @@ helm install --generate-name stable/prometheus \
 ## prometheus-adapter
 # https://github.com/helm/charts/tree/master/stable/prometheus-adapter
 helm install --generate-name stable/prometheus-adapter \
-    --set prometheus.url="prometheus.domain.com"
+    --set prometheus.url=http://prometheus-server.default.svc.cluster.local  \
+    --set prometheus.port=80
+
+## grafana
+# https://github.com/helm/charts/tree/master/stable/grafana
+helm install --generate-name stable/grafana \
+    --set testFramework.enabled=false \
+    --set ingress.enabled=true \
+    --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
+    --set ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
+    --set ingress.hosts={"grafana.domain.com"} \
+    --set ingress.tls\[0\].secretName="grafana-general-tls" \
+    --set ingress.tls\[0\].hosts={"grafana.domain.com"}
