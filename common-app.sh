@@ -56,3 +56,16 @@ helm install --generate-name stable/kubernetes-dashboard \
 helm install --generate-name stable/chartmuseum \
     --set env.open.DISABLE_API=false \
     --set persistence.enabled=true
+
+## ghost
+# https://github.com/bitnami/charts/tree/master/bitnami/ghost
+helm install --generate-name bitnami/ghost \
+    --set service.type=ClusterIP \
+    --set ingress.enabled=true \
+    --set ingress.certManager=true \
+    --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
+    --set ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
+    --set ingress.hosts\[0\].tls=true \
+    --set ingress.hosts\[0\].tlsHosts\[0\]="ghost.local" \
+    --set ingress.hosts\[0\].tlsSecret="ghost.local-tls"
+
