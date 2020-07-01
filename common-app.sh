@@ -13,12 +13,11 @@ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 
 ## ingress
 # https://github.com/helm/charts/tree/master/stable/nginx-ingress
-helm install --generate-name stable/nginx-ingress \
-    --set controller.metrics.enabled=true
+helm install --generate-name stable/nginx-ingress
 
 ## cert-manager
 # https://cert-manager.io/docs/installation/kubernetes/
-kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/v0.13.1/deploy/manifests/00-crds.yaml
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.1/cert-manager.crds.yaml
 kubectl create namespace cert-manager
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
