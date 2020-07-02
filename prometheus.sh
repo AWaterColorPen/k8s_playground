@@ -1,3 +1,10 @@
+###
+# there are 3 scenarios
+# 1. you want prometheus + grafana + kube state metrics + node exporter but prometheus-pushgateway. only prometheus-operator is ok
+# 2. you want prometheus + grafana + kube state metrics + node exporter and prometheus-pushgateway. prometheus-operator + prometheus-pushgateway is ok
+# 3. you want prometheus + grafana + prometheus-pushgateway but kube state metrics or node exporter. prometheus + grafana + prometheus-pushgateway is ok
+###
+
 ## prometheus-operator
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator
 helm install --generate-name stable/prometheus-operator \
@@ -43,12 +50,6 @@ helm install --generate-name stable/prometheus \
     --set pushgateway.ingress.tls\[0\].secretName="pushgateway-general-tls" \
     --set pushgateway.ingress.tls\[0\].hosts={"pushgateway.domain.com"}
 
-## prometheus-adapter
-# https://github.com/helm/charts/tree/master/stable/prometheus-adapter
-helm install --generate-name stable/prometheus-adapter \
-    --set prometheus.url=http://prometheus-server.default.svc.cluster.local  \
-    --set prometheus.port=80
-
 ## grafana
 # https://github.com/helm/charts/tree/master/stable/grafana
 helm install --generate-name stable/grafana \
@@ -59,3 +60,19 @@ helm install --generate-name stable/grafana \
     --set ingress.hosts={"grafana.domain.com"} \
     --set ingress.tls\[0\].secretName="grafana-general-tls" \
     --set ingress.tls\[0\].hosts={"grafana.domain.com"}
+
+## prometheus-pushgateway
+# https://github.com/helm/charts/tree/master/stable/prometheus-pushgateway
+helm install --generate-name stable/prometheus-pushgateway \
+    --set ingress.enabled=true \
+    --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
+    --set ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
+    --set ingress.hosts={"pushgateway.domain.com"} \
+    --set ingress.tls\[0\].secretName="pushgateway-general-tls" \
+    --set ingress.tls\[0\].hosts={"pushgateway.domain.com"}
+
+## prometheus-adapter
+# https://github.com/helm/charts/tree/master/stable/prometheus-adapter
+helm install --generate-name stable/prometheus-adapter \
+    --set prometheus.url=http://prometheus-server.default.svc.cluster.local  \
+    --set prometheus.port=80
