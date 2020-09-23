@@ -26,9 +26,21 @@ helm install --generate-name stable/prometheus-operator \
     --set prometheus.ingress.tls\[0\].secretName="prometheus-general-tls" \
     --set prometheus.ingress.tls\[0\].hosts={"prometheus.domain.com"}
 
+## grafana
+# https://github.com/helm/charts/tree/master/stable/grafana
+helm install --generate-name stable/grafana \
+    --set testFramework.enabled=false \
+    --set ingress.enabled=true \
+    --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
+    --set ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
+    --set ingress.hosts={"grafana.domain.com"} \
+    --set ingress.tls\[0\].secretName="grafana-general-tls" \
+    --set ingress.tls\[0\].hosts={"grafana.domain.com"}
+
 ## prometheus
-# https://github.com/helm/charts/tree/master/stable/prometheus
-helm install --generate-name stable/prometheus \
+#  https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install --generate-name prometheus-community/prometheus \
     --set alertmanager.ingress.enabled=true \
     --set alertmanager.ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
     --set alertmanager.ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
@@ -50,20 +62,9 @@ helm install --generate-name stable/prometheus \
     --set pushgateway.ingress.tls\[0\].secretName="pushgateway-general-tls" \
     --set pushgateway.ingress.tls\[0\].hosts={"pushgateway.domain.com"}
 
-## grafana
-# https://github.com/helm/charts/tree/master/stable/grafana
-helm install --generate-name stable/grafana \
-    --set testFramework.enabled=false \
-    --set ingress.enabled=true \
-    --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
-    --set ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
-    --set ingress.hosts={"grafana.domain.com"} \
-    --set ingress.tls\[0\].secretName="grafana-general-tls" \
-    --set ingress.tls\[0\].hosts={"grafana.domain.com"}
-
 ## prometheus-pushgateway
-# https://github.com/helm/charts/tree/master/stable/prometheus-pushgateway
-helm install --generate-name stable/prometheus-pushgateway \
+# https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-pushgateway
+helm install --generate-name prometheus-community/prometheus-pushgateway \
     --set ingress.enabled=true \
     --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
     --set ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
@@ -72,7 +73,7 @@ helm install --generate-name stable/prometheus-pushgateway \
     --set ingress.tls\[0\].hosts={"pushgateway.domain.com"}
 
 ## prometheus-adapter
-# https://github.com/helm/charts/tree/master/stable/prometheus-adapter
-helm install --generate-name stable/prometheus-adapter \
+# https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-adapter
+helm install --generate-name prometheus-community/prometheus-adapter \
     --set prometheus.url=http://prometheus-server.default.svc.cluster.local  \
     --set prometheus.port=80

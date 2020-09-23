@@ -17,7 +17,7 @@ helm install --generate-name stable/nginx-ingress
 
 ## cert-manager
 # https://cert-manager.io/docs/installation/kubernetes/
-kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.1/cert-manager.crds.yaml
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.0.2/cert-manager.crds.yaml
 kubectl create namespace cert-manager
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
@@ -55,16 +55,3 @@ helm install --generate-name stable/kubernetes-dashboard \
 helm install --generate-name stable/chartmuseum \
     --set env.open.DISABLE_API=false \
     --set persistence.enabled=true
-
-## ghost
-# https://github.com/bitnami/charts/tree/master/bitnami/ghost
-helm install --generate-name bitnami/ghost \
-    --set service.type=ClusterIP \
-    --set ingress.enabled=true \
-    --set ingress.certManager=true \
-    --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
-    --set ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
-    --set ingress.hosts\[0\].tls=true \
-    --set ingress.hosts\[0\].tlsHosts\[0\]="ghost.local" \
-    --set ingress.hosts\[0\].tlsSecret="ghost.local-tls"
-
