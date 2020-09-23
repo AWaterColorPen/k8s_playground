@@ -49,9 +49,3 @@ helm install --generate-name stable/kubernetes-dashboard \
     --set ingress.tls\[0\].secretName="kubernetes-dashboard-tls" \
     --set ingress.tls\[0\].hosts={"kubernetes-dashboard.domain.com"} \
     --set rbac.clusterAdminRole=true
-
-## chartmuseum
-# https://github.com/helm/charts/tree/master/stable/chartmuseum
-helm install --generate-name stable/chartmuseum \
-    --set env.open.DISABLE_API=false \
-    --set persistence.enabled=true
