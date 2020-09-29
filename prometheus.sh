@@ -27,9 +27,12 @@ helm install --generate-name stable/prometheus-operator \
     --set prometheus.ingress.tls\[0\].hosts={"prometheus.domain.com"}
 
 ## grafana
-# https://github.com/helm/charts/tree/master/stable/grafana
+# https://github.com/grafana/helm-charts/blob/main/charts/grafana
+helm repo add grafana https://grafana.github.io/helm-charts
 helm install --generate-name stable/grafana \
     --set testFramework.enabled=false \
+    --set deploymentStrategy.type=Recreate \
+    --set persistence.enabled=true \
     --set ingress.enabled=true \
     --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
     --set ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \

@@ -31,6 +31,13 @@ helm repo update
 helm install --generate-name bitnami/kubeapps \
     --set ingress.enabled=true \
     --set ingress.certManager=true \
+    --set assetsvc.replicaCount=1 \
+    --set dashboard.replicaCount=1 \
+    --set frontend.replicaCount=1 \
+    --set kubeops.replicaCount=1 \
+    --set apprepository.crontab="0 */1 * * *" \
+    --set tillerProxy.replicaCount=1 \
+    --set postgresql.replication.enabled=false
     --set useHelm3=true
 
 kubectl create serviceaccount kubeapps-operator

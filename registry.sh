@@ -10,4 +10,6 @@ helm install --generate-name bitnami/etcd \
 # https://github.com/bitnami/charts/tree/master/bitnami/zookeeper
 helm install --generate-name bitnami/zookeeper \
     --set replicaCount=3 \
+    --set persistence.enabled=false \
+    # --set persistence.size=100Gi \
     --set metrics.enabled=true
