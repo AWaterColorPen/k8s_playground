@@ -2,57 +2,46 @@
 
 ## switchhosts
 # https://github.com/oldj/SwitchHosts
-brew cask install switchhosts
+brew install switchhosts
 
 ## helm
 # https://helm.sh/docs/intro/install/
 brew install helm
 
-## initialize a helm chart repository
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-
 ## ingress
-# https://github.com/helm/charts/tree/master/stable/nginx-ingress
-helm install --generate-name stable/nginx-ingress
+# https://artifacthub.io/packages/helm/nginx/nginx-ingress
+helm repo add nginx-stable https://helm.nginx.com/stable
+helm repo update
+helm install --generate-name nginx-stable/nginx-ingress
 
 ## cert-manager
-# https://cert-manager.io/docs/installation/kubernetes/
-kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.0.2/cert-manager.crds.yaml
-kubectl create namespace cert-manager
+# https://cert-manager.io/docs/installation/helm/#installing-with-helm
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.yaml
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
-helm install --generate-name jetstack/cert-manager \
-    --namespace cert-manager
+helm install --generate-name jetstack/cert-manager
 
 ## kubeapps
-# https://github.com/kubeapps/kubeapps/blob/master/docs/user/getting-started.md
+# https://artifacthub.io/packages/helm/bitnami/kubeapps
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 helm install --generate-name bitnami/kubeapps \
     --set ingress.enabled=true \
     --set ingress.certManager=true \
-    --set assetsvc.replicaCount=1 \
-    --set dashboard.replicaCount=1 \
-    --set frontend.replicaCount=1 \
-    --set kubeops.replicaCount=1 \
-    --set apprepository.crontab="0 */1 * * *" \
-    --set tillerProxy.replicaCount=1 \
-    --set postgresql.replication.enabled=false
-    --set useHelm3=true
+    --set ingress.hostname="kubeapps.domain.com" \
+    --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx
 
+# https://github.com/vmware-tanzu/kubeapps/blob/main/site/content/docs/latest/tutorials/getting-started.md#step-2-create-a-demo-credential-with-which-to-access-kubeapps-and-kubernetes
 kubectl create serviceaccount kubeapps-operator
 kubectl create clusterrolebinding kubeapps-operator --clusterrole=cluster-admin --serviceaccount=default:kubeapps-operator
-kubectl get secret $(kubectl get serviceaccount kubeapps-operator -o jsonpath='{range .secrets[*]}{.name}{"\n"}{end}' | grep kubeapps-operator-token) -o jsonpath='{.data.token}' -o go-template='{{.data.token | base64decode}}' && echo
-
-## kubernetes-dashboard
-# https://github.com/helm/charts/tree/master/stable/kubernetes-dashboard
-helm install --generate-name stable/kubernetes-dashboard \
-    --set enableSkipLogin=true \
-    --set ingress.enabled=true \
-    --set ingress.hosts={"kubernetes-dashboard.domain.com"} \
-    --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx \
-    --set ingress.annotations."kubernetes\.io/tls-acme"=\"true\" \
-    --set ingress.annotations."nginx\.ingress\.kubernetes\.io/backend-protocol"=HTTPS \
-    --set ingress.tls\[0\].secretName="kubernetes-dashboard-tls" \
-    --set ingress.tls\[0\].hosts={"kubernetes-dashboard.domain.com"} \
-    --set rbac.clusterAdminRole=true
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kubeapps-operator-token
+  namespace: default
+  annotations:
+    kubernetes.io/service-account.name: kubeapps-operator
+type: kubernetes.io/service-account-token
+EOF
+kubectl get secret kubeapps-operator-token -o jsonpath='{.data.token}' -o go-template='{{.data.token | base64decode}}' && echo
